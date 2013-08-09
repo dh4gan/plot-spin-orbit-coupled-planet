@@ -11,8 +11,10 @@ from sys import exit
 pi = 3.1415926585
 
 longcol = 0
-latcol =1
-fluxcol =2 
+latcol = 1
+fluxcol = 2 
+altcol = 3
+azcol = 4
 
 # Read in input parameters
 
@@ -42,7 +44,10 @@ for i in range(nfiles):
         k+=1        
     
     inputfile = prefix + '.'+num
-    outputfile = prefix+num+'.png'
+    fluxfile = 'flux_'+prefix+num+'.png'
+    
+    azfile = 'azimuth_'+prefix+num+'.png'
+    altfile = 'altitude_'+prefix+num+'.png'
     # Read in header - time, position data etc
 
 
@@ -57,15 +62,14 @@ for i in range(nfiles):
     nlat = int(numbers[1])
     nlong = int(numbers[2])
     
-    separation=float(numbers[3])
-    trueanomaly=float(numbers[4])
-    x = float(numbers[5])
-    y = float(numbers[6])
-    z = float(numbers[7])
     
     f.close()
     
-    print 'File ', str(i),' Time  ', time, 'xyz: ', x, y, z
+    print 'File ', str(i+1),' Time  ', time
+    
+    if(i==0):
+        # Create array to hold integrated flux data
+        integrated = np.zeros((nlat,nlong))
     
     # Read in rest of file
     
@@ -77,30 +81,67 @@ for i in range(nfiles):
     latitude = data[:,latcol].reshape(nlat,nlong)*180.0/pi
     longitude= data[:,longcol].reshape(nlat,nlong)*180.0/pi
     flux = data[:,fluxcol].reshape(nlat,nlong)
+    altitude = data[:,altcol].reshape(nlat,nlong)*180.0/pi
+    azimuth = data[:,azcol].reshape(nlat,nlong)*180.0/pi
     
-
-    # Plot 2D map
+    # Add flux to integrated map
+    integrated = integrated + flux/float(nfiles)
     
-    fig1 = plt.figure()
+    # Plot 2D maps of this timestep
+    
+    fig1 = plt.figure(1)
     ax = fig1.add_subplot(111)
     ax.set_xlabel('Longitude (degrees)')
     ax.set_ylabel('Latitude (degrees)')
     plt.pcolor(longitude,latitude,flux, cmap='spectral',vmin = 0.0, vmax = 0.08)
     plt.colorbar()
 
-    plt.savefig(outputfile, format= 'png')
+    plt.savefig(fluxfile, format= 'png')
+    plt.clf()
+    
+    fig1 = plt.figure(2)
+    ax = fig1.add_subplot(111)
+    ax.set_xlabel('Longitude (degrees)')
+    ax.set_ylabel('Latitude (degrees)')
+    plt.pcolor(longitude,latitude,altitude, cmap='spectral',vmin = 0.0, vmax = 180.0)
+    plt.colorbar()
 
+    plt.savefig(altfile, format= 'png')
+    plt.clf()
+    
+    fig1 = plt.figure(3)
+    ax = fig1.add_subplot(111)
+    ax.set_xlabel('Longitude (degrees)')
+    ax.set_ylabel('Latitude (degrees)')
+    plt.pcolor(longitude,latitude,azimuth, cmap='spectral',vmin = -180.0, vmax = 180.0)
+    plt.colorbar()
+
+    plt.savefig(azfile, format= 'png')
+    plt.clf()
     #exit()
     # Save to file
 
 # end of loop
 
+# Plot 2D map of integrated flux
+    
+outputfile = 'integrated'+prefix+'.png'
+
+fig1 = plt.figure(4)
+ax = fig1.add_subplot(111)
+ax.set_xlabel('Longitude (degrees)')
+ax.set_ylabel('Latitude (degrees)')
+plt.pcolor(longitude,latitude,integrated, cmap='spectral',vmin = 0.0, vmax = 0.08)
+plt.colorbar()
+
+plt.savefig(outputfile, format= 'png')
+
 
 # Create movie if requested
 if(moviechoice=='y'):
-    print 'Creating animated gif, filename movie.gif'
-    
-    system('/usr/bin/convert '+prefix+'*.png movie.gif')
+    print 'Creating animated gif of flux pattern, filename movie.gif'
+    system('/opt/ImageMagick/bin/convert flux'+prefix+'*.png movie.gif')
+    #system('/usr/bin/convert '+prefix+'*.png movie.gif')
     if(deletechoice=='y'):
         print 'Deleting png files'
         system('rm '+prefix+'*.png')
