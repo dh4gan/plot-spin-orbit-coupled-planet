@@ -103,7 +103,7 @@ for i in range(nfiles):
     ax = fig1.add_subplot(111)
     ax.set_xlabel('Longitude (degrees)')
     ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,altitude, cmap='spectral',vmin = -90.0, vmax = 90.0)
+    plt.pcolor(longitude,latitude,altitude, cmap='spectral',vmin = 0.0, vmax = 90.0)
     plt.colorbar()
 
     plt.savefig(altfile, format= 'png')
@@ -138,8 +138,8 @@ plt.savefig(outputfile, format= 'png')
 
 # Command for converting images into gifs - machine dependent
 
-#convertcommand = '/opt/ImageMagick/bin/convert '
-convertcommand = '/usr/bin/convert '
+convertcommand = '/opt/ImageMagick/bin/convert '
+#convertcommand = '/usr/bin/convert '
 
 # Create movie if requested
 if(moviechoice=='y'):
