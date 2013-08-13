@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from string import split
 from os import system
-from sys import exit
+#from sys import exit
 
 pi = 3.1415926585
 
@@ -93,7 +93,7 @@ for i in range(nfiles):
     ax = fig1.add_subplot(111)
     ax.set_xlabel('Longitude (degrees)')
     ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,flux, cmap='spectral',vmin = 0.0, vmax = 0.08)
+    plt.pcolor(longitude,latitude,flux, cmap='spectral',vmin = 0.0, vmax = 0.1)
     plt.colorbar()
 
     plt.savefig(fluxfile, format= 'png')
@@ -103,7 +103,7 @@ for i in range(nfiles):
     ax = fig1.add_subplot(111)
     ax.set_xlabel('Longitude (degrees)')
     ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,altitude, cmap='spectral',vmin = 0.0, vmax = 180.0)
+    plt.pcolor(longitude,latitude,altitude, cmap='spectral',vmin = -90.0, vmax = 90.0)
     plt.colorbar()
 
     plt.savefig(altfile, format= 'png')
@@ -113,7 +113,7 @@ for i in range(nfiles):
     ax = fig1.add_subplot(111)
     ax.set_xlabel('Longitude (degrees)')
     ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,azimuth, cmap='spectral',vmin = -180.0, vmax = 180.0)
+    plt.pcolor(longitude,latitude,azimuth, cmap='spectral',vmin = 0.0, vmax = 360.0)
     plt.colorbar()
 
     plt.savefig(azfile, format= 'png')
@@ -136,14 +136,25 @@ plt.colorbar()
 
 plt.savefig(outputfile, format= 'png')
 
+# Command for converting images into gifs - machine dependent
+
+#convertcommand = '/opt/ImageMagick/bin/convert '
+convertcommand = '/usr/bin/convert '
 
 # Create movie if requested
 if(moviechoice=='y'):
-    print 'Creating animated gif of flux pattern, filename movie.gif'
-    system('/opt/ImageMagick/bin/convert flux'+prefix+'*.png movie.gif')
-    #system('/usr/bin/convert '+prefix+'*.png movie.gif')
+    print 'Creating animated gif of flux pattern, filename fluxmovie.gif'
+    system(convertcommand +'flux_'+prefix+'*.png fluxmovie.gif')
+    print 'Creating animated gif of altitude pattern, filename altmovie.gif'
+    system(convertcommand +'altitude_'+prefix+'*.png altmovie.gif')
+    print 'Creating animated gif of azimuth pattern, filename azmovie.gif'
+    system(convertcommand +'azimuth_'+prefix+'*.png azmovie.gif')
+
     if(deletechoice=='y'):
         print 'Deleting png files'
-        system('rm '+prefix+'*.png')
+        system('rm flux_'+prefix+'*.png')
+        system('rm altitude_'+prefix+'*.png')
+        system('rm azimuth_'+prefix+'*.png')
+
 
 print 'Complete'
