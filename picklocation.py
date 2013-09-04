@@ -1,6 +1,6 @@
 # Written by D Forgan, 12/8/2013
 # Reads in output dumps from spinorbit_coupled_planet (C++ code)
-# Produces flux map and movie of star position
+# Produces curves for data at specific longitude and latitude
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,9 +15,10 @@ latcol = 1
 fluxcol = 2
 Teffcol = 3
 gammacol = 4 
-altcol = 5
-azcol = 6
-hourcol = 7
+darkcol = 5
+altcol = 6
+azcol = 7
+hourcol = 8
 
 # Read in input parameters
 
@@ -41,6 +42,7 @@ time = np.zeros(nfiles)
 flux = np.zeros(nfiles)
 Teff = np.zeros(nfiles)
 Ngamma = np.zeros(nfiles)
+darkness = np.zeros(nfiles)
 altitude = np.zeros(nfiles)
 azimuth = np.zeros(nfiles)
 hourangle = np.zeros(nfiles)
@@ -144,7 +146,7 @@ for i in range(nfiles):
 
 # Plot flux
 
-fluxfile = 'flux_'+prefix+'_latlong_'+str(mylat)+'_'+str(mylong)+'.png'    
+fluxfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_flux_'+prefix+'_.png'    
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -156,7 +158,7 @@ plt.savefig(fluxfile, format= 'png')
 
 # Plot Effective Temperature
 
-Tfile = 'Teff_'+prefix+'_latlong_'+str(mylat)+'_'+str(mylong)+'.png'    
+Tfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_Teff_'+prefix+'_.png'  
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -168,7 +170,7 @@ plt.savefig(Tfile, format= 'png')
 
 # Plot Ngamma
 
-gammafile = 'ngamma_'+prefix+'_latlong_'+str(mylat)+'_'+str(mylong)+'.png'    
+gammafile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_ngamma_'+prefix+'_.png'   
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -176,14 +178,24 @@ ax.set_xlabel('Time (yr)')
 ax.set_ylabel('Maximum Photon flux ($\mu$ mol $m^{-2}s^{-1}$')
 plt.plot(time,Ngamma)
 
-plt.savefig(Tfile, format= 'png')
+plt.savefig(gammafile, format= 'png')
 
+# Plot Ngamma
 
+darkfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_darkness_'+prefix+'_.png'   
+
+fig1 = plt.figure()
+ax = fig1.add_subplot(111)
+ax.set_xlabel('Time (yr)')
+ax.set_ylabel('Period of Darkness (yr)')
+plt.plot(time,darkness)
+
+plt.savefig(darkfile, format= 'png')
 
 
 # Plot altitude
 
-altfile = 'altitude_'+prefix+'_latlong_'+str(mylat)+'_'+str(mylong)+'.png'    
+altfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_altitude_'+prefix+'_.png'  
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -195,7 +207,7 @@ plt.savefig(altfile, format= 'png')
 
 # Plot azimuth
 
-azfile = 'azimuth_'+prefix+'_latlong_'+str(mylat)+'_'+str(mylong)+'.png'    
+azfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_azimuth_'+prefix+'_.png'  
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -207,7 +219,7 @@ plt.savefig(azfile, format= 'png')
 
 # Hour Angle
 
-hourfile = 'hourangle_'+prefix+'_latlong_'+str(mylat)+'_'+str(mylong)+'.png'    
+hourfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_hourangle_'+prefix+'_.png'  
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
