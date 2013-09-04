@@ -12,10 +12,12 @@ pi = 3.1415926585
 
 longcol = 0
 latcol = 1
-fluxcol = 2 
-altcol = 3
-azcol = 4
-hourcol = 5
+fluxcol = 2
+Teffcol = 3
+gammacol = 4 
+altcol = 5
+azcol = 6
+hourcol = 7
 
 # Read in input parameters
 
@@ -27,7 +29,7 @@ hourcol = 5
 #    deletechoice = raw_input("Delete .png files? (y/n) ")
 
 prefix = 'trial'
-nfiles = 100
+nfiles = 1000
 moviechoice = 'y'
 deletechoice = 'y'
 
@@ -37,10 +39,11 @@ nzeros = int(np.log10(nfiles))
 
 time = np.zeros(nfiles)
 flux = np.zeros(nfiles)
+Teff = np.zeros(nfiles)
+Ngamma = np.zeros(nfiles)
 altitude = np.zeros(nfiles)
 azimuth = np.zeros(nfiles)
 hourangle = np.zeros(nfiles)
-
 
 height= np.zeros(nfiles)
 horizontal = np.zeros(nfiles)
@@ -110,7 +113,9 @@ for i in range(nfiles):
     myentry = data[data[:,latcol]==mylat]
     myentry = myentry[myentry[:,longcol]==mylong]        
         
-    flux[i] = myentry[0,fluxcol]        
+    flux[i] = myentry[0,fluxcol]
+    Teff[i] = myentry[0,Teffcol]
+    Ngamma[i] = myentry[0,gammacol]        
     altitude[i] = myentry[0,altcol]
     azimuth[i] = myentry[0,azcol]    
     hourangle[i] = myentry[0,hourcol]*180.0/pi
@@ -119,7 +124,6 @@ for i in range(nfiles):
     #horizontal[i] = -np.cos(azimuth[i])*np.sin(altitude[i])
     horizontal[i] = np.sin(altitude[i])*np.cos(azimuth[i])
     height[i] = np.sin(altitude[i])*np.sin(azimuth[i])
-
 
     print i, hourangle[i], azimuth[i], altitude[i], horizontal[i], height[i]
     # Plot sky position for this timestep
@@ -149,6 +153,33 @@ ax.set_ylabel('Flux (arbitrary)')
 plt.plot(time,flux)
 
 plt.savefig(fluxfile, format= 'png')
+
+# Plot Effective Temperature
+
+Tfile = 'Teff_'+prefix+'_latlong_'+str(mylat)+'_'+str(mylong)+'.png'    
+
+fig1 = plt.figure()
+ax = fig1.add_subplot(111)
+ax.set_xlabel('Time (yr)')
+ax.set_ylabel('Effective Temperature')
+plt.plot(time,Teff)
+
+plt.savefig(Tfile, format= 'png')
+
+# Plot Ngamma
+
+gammafile = 'ngamma_'+prefix+'_latlong_'+str(mylat)+'_'+str(mylong)+'.png'    
+
+fig1 = plt.figure()
+ax = fig1.add_subplot(111)
+ax.set_xlabel('Time (yr)')
+ax.set_ylabel('Maximum Photon flux ($\mu$ mol $m^{-2}s^{-1}$')
+plt.plot(time,Ngamma)
+
+plt.savefig(Tfile, format= 'png')
+
+
+
 
 # Plot altitude
 
@@ -201,8 +232,8 @@ plt.savefig(azfile, format= 'png')
 
 # Command for converting images into gifs - machine dependent
 
-convertcommand = '/opt/ImageMagick/bin/convert '
-#convertcommand = '/usr/bin/convert '
+#convertcommand = '/opt/ImageMagick/bin/convert '
+convertcommand = '/usr/bin/convert '
 
 # Create movie if requested
 if(moviechoice=='y'):

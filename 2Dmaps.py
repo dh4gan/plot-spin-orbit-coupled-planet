@@ -12,9 +12,11 @@ pi = 3.1415926585
 
 longcol = 0
 latcol = 1
-fluxcol = 2 
-altcol = 3
-azcol = 4
+fluxcol = 2
+Teffcol = 3
+gammacol = 4 
+altcol = 5
+azcol = 6
 
 # Read in input parameters
 
@@ -45,12 +47,12 @@ for i in range(nfiles):
     
     inputfile = prefix + '.'+num
     fluxfile = 'flux_'+prefix+num+'.png'
-    
+    Tfile = 'Teff_'+prefix+num+'.png'
+    gammafile = 'ngamma_'+prefix+num+'.png'
     azfile = 'azimuth_'+prefix+num+'.png'
     altfile = 'altitude_'+prefix+num+'.png'
+    
     # Read in header - time, position data etc
-
-
 
     f = open(inputfile, 'r')
 
@@ -61,8 +63,7 @@ for i in range(nfiles):
     time=float(numbers[0])
     nlat = int(numbers[1])
     nlong = int(numbers[2])
-    
-    
+        
     f.close()
     
     print 'File ', str(i+1),' Time  ', time
@@ -74,13 +75,14 @@ for i in range(nfiles):
     # Read in rest of file
     
     data = np.genfromtxt(inputfile, skiprows=1)
-    
-    
+        
     # Reshape to fit 2D array
     
     latitude = data[:,latcol].reshape(nlat,nlong)*180.0/pi
     longitude= data[:,longcol].reshape(nlat,nlong)*180.0/pi
     flux = data[:,fluxcol].reshape(nlat,nlong)
+    Teff = data[:,Teffcol].reshape(nlat,nlong)
+    ngamma = data[:,gammacol].reshape(nlat,nlong)
     altitude = data[:,altcol].reshape(nlat,nlong)*180.0/pi
     azimuth = data[:,azcol].reshape(nlat,nlong)*180.0/pi
     
@@ -88,6 +90,9 @@ for i in range(nfiles):
     integrated = integrated + flux/float(nfiles)
     
     # Plot 2D maps of this timestep
+    
+    
+    # Flux
     
     fig1 = plt.figure(1)
     ax = fig1.add_subplot(111)
@@ -99,7 +104,31 @@ for i in range(nfiles):
     plt.savefig(fluxfile, format= 'png')
     plt.clf()
     
+    # Effective Temperature
     fig1 = plt.figure(2)
+    ax = fig1.add_subplot(111)
+    ax.set_xlabel('Longitude (degrees)')
+    ax.set_ylabel('Latitude (degrees)')
+    plt.pcolor(longitude,latitude,Teff, cmap='spectral',vmin = 0.0, vmax = 500.0)
+    plt.colorbar()
+
+    plt.savefig(Tfile, format= 'png')
+    plt.clf()
+
+    # N Gamma
+    fig1 = plt.figure(3)
+    ax = fig1.add_subplot(111)
+    ax.set_xlabel('Longitude (degrees)')
+    ax.set_ylabel('Latitude (degrees)')
+    plt.pcolor(longitude,latitude,np.log10(ngamma), cmap='spectral',vmin = 0.0, vmax = 4.0)
+    plt.colorbar()
+
+    plt.savefig(gammafile, format= 'png')
+    plt.clf()
+
+    
+    
+    fig1 = plt.figure(4)
     ax = fig1.add_subplot(111)
     ax.set_xlabel('Longitude (degrees)')
     ax.set_ylabel('Latitude (degrees)')
@@ -109,7 +138,7 @@ for i in range(nfiles):
     plt.savefig(altfile, format= 'png')
     plt.clf()
     
-    fig1 = plt.figure(3)
+    fig1 = plt.figure(5)
     ax = fig1.add_subplot(111)
     ax.set_xlabel('Longitude (degrees)')
     ax.set_ylabel('Latitude (degrees)')
@@ -138,8 +167,8 @@ plt.savefig(outputfile, format= 'png')
 
 # Command for converting images into gifs - machine dependent
 
-convertcommand = '/opt/ImageMagick/bin/convert '
-#convertcommand = '/usr/bin/convert '
+#convertcommand = '/opt/ImageMagick/bin/convert '
+convertcommand = '/usr/bin/convert '
 
 # Create movie if requested
 if(moviechoice=='y'):
