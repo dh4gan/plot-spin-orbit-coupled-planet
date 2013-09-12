@@ -30,9 +30,9 @@ hourcol = 8
 #    deletechoice = raw_input("Delete .png files? (y/n) ")
 
 prefix = 'trial'
-nfiles = 1000
-moviechoice = 'y'
-deletechoice = 'y'
+nfiles = 100
+moviechoice = 'n'
+deletechoice = 'n'
 
 nzeros = int(np.log10(nfiles))
 
@@ -237,15 +237,15 @@ fig1 = plt.figure()
 ax = fig1.add_subplot(111)
 ax.set_xlabel('Time (yr)')
 ax.set_ylabel('x(y) position')
-plt.plot(time,height, color='red')
-plt.plot(time,horizontal, color='blue')
-
+plt.plot(time,height, color='red', label='Height')
+plt.plot(time,horizontal, color='blue', label='Horizontal')
+ax.legend()
 plt.savefig(azfile, format= 'png')
 
 # Command for converting images into gifs - machine dependent
 
-#convertcommand = '/opt/ImageMagick/bin/convert '
-convertcommand = '/usr/bin/convert '
+convertcommand = '/opt/ImageMagick/bin/convert '
+#convertcommand = '/usr/bin/convert '
 
 # Create movie if requested
 if(moviechoice=='y'):
@@ -253,7 +253,7 @@ if(moviechoice=='y'):
     system(convertcommand +'skypos_'+prefix+'*_latlong_'+str(mylat)+'_'+str(mylong)+'.png skymovie.gif')
     
     if(deletechoice=='y'):
-        print 'Deleting png files'
+        print 'Deleting skypos_*.png files'
         system('rm skypos_'+prefix+'*.png')                
 
 
