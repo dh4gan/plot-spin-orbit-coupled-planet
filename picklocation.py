@@ -22,17 +22,17 @@ hourcol = 8
 
 # Read in input parameters
 
-#prefix = raw_input("What is the file prefix? ")
-#nfiles = input("How many files? ")
-#moviechoice = raw_input("Make an animated gif at end? (y/n) ")
-#deletechoice = 'n'
-#if(moviechoice=='y'):
-#    deletechoice = raw_input("Delete .png files? (y/n) ")
-
-prefix = 'trial'
-nfiles = 100
-moviechoice = 'n'
+prefix = raw_input("What is the file prefix? ")
+nfiles = input("How many files? ")
+moviechoice = raw_input("Make an animated gif at end? (y/n) ")
 deletechoice = 'n'
+if(moviechoice=='y'):
+    deletechoice = raw_input("Delete .png files? (y/n) ")
+
+#prefix = 'trial'
+#nfiles = 100
+#moviechoice = 'n'
+#deletechoice = 'n'
 
 nzeros = int(np.log10(nfiles))
 
@@ -122,10 +122,11 @@ for i in range(nfiles):
     azimuth[i] = myentry[0,azcol]    
     hourangle[i] = myentry[0,hourcol]*180.0/pi
 
-    #height[i] = np.sin(altitude[i])
+    horizontal[i] = np.cos(altitude[i])*np.sin(azimuth[i])
+    height[i] = np.sin(altitude[i])
     #horizontal[i] = -np.cos(azimuth[i])*np.sin(altitude[i])
-    horizontal[i] = np.sin(altitude[i])*np.cos(azimuth[i])
-    height[i] = np.sin(altitude[i])*np.sin(azimuth[i])
+    #horizontal[i] = np.sin(altitude[i])*np.cos(azimuth[i])
+    #height[i] = np.sin(altitude[i])*np.sin(azimuth[i])
 
     print i, hourangle[i], azimuth[i], altitude[i], horizontal[i], height[i]
     # Plot sky position for this timestep
@@ -134,8 +135,8 @@ for i in range(nfiles):
     ax = fig1.add_subplot(111)
     ax.set_xlabel('Horizontal Position')
     ax.set_ylabel('Height')
-    ax.set_ylim(0,1)
-    ax.set_xlim(0,1)    
+    ax.set_ylim(-1,1)
+    ax.set_xlim(-1,1)    
     plt.scatter(horizontal[i],height[i], marker='o', color='red')
     if(i>0): plt.plot(horizontal[:i-1],height[:i-1], linestyle='--', color='blue')    
     plt.savefig(skyfile, format= 'png')
@@ -244,8 +245,8 @@ plt.savefig(azfile, format= 'png')
 
 # Command for converting images into gifs - machine dependent
 
-convertcommand = '/opt/ImageMagick/bin/convert '
-#convertcommand = '/usr/bin/convert '
+#convertcommand = '/opt/ImageMagick/bin/convert '
+convertcommand = '/usr/bin/convert '
 
 # Create movie if requested
 if(moviechoice=='y'):
