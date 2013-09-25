@@ -20,6 +20,9 @@ altcol = 6
 azcol = 7
 hourcol = 8
 
+# In positions file, this is where distance is kept
+distcol = 3
+
 # Read in input parameters
 
 prefix = raw_input("What is the file prefix? ")
@@ -49,6 +52,14 @@ hourangle = np.zeros(nfiles)
 
 height= np.zeros(nfiles)
 horizontal = np.zeros(nfiles)
+starsize = np.zeros(nfiles)
+
+# Read in distance from star from position file
+
+
+
+posfile = prefix+'.position'
+distance = np.genfromtxt(posfile, usecols=distcol)
 
 # Loop over files
 
@@ -124,20 +135,19 @@ for i in range(nfiles):
 
     horizontal[i] = np.cos(altitude[i])*np.sin(azimuth[i])
     height[i] = np.sin(altitude[i])
-    #horizontal[i] = -np.cos(azimuth[i])*np.sin(altitude[i])
-    #horizontal[i] = np.sin(altitude[i])*np.cos(azimuth[i])
-    #height[i] = np.sin(altitude[i])*np.sin(azimuth[i])
 
-    print i, hourangle[i], azimuth[i], altitude[i], horizontal[i], height[i]
+    starsize[i] = 20.0/(distance[i]*distance[i])
+ 
+    #print i, hourangle[i], azimuth[i], altitude[i], horizontal[i], height[i]
     # Plot sky position for this timestep
     
     fig1 = plt.figure(1)
     ax = fig1.add_subplot(111)
     ax.set_xlabel('Horizontal Position')
     ax.set_ylabel('Height')
-    ax.set_ylim(-1,1)
+    ax.set_ylim(0,1)
     ax.set_xlim(-1,1)    
-    plt.scatter(horizontal[i],height[i], marker='o', color='red')
+    plt.scatter(horizontal[i],height[i], marker='o', s = starsize[i], color='red')
     if(i>0): plt.plot(horizontal[:i-1],height[:i-1], linestyle='--', color='blue')    
     plt.savefig(skyfile, format= 'png')
     plt.clf()
@@ -147,7 +157,7 @@ for i in range(nfiles):
 
 # Plot flux
 
-fluxfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_flux_'+prefix+'_.png'    
+fluxfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_flux_'+prefix+'.png'    
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -159,7 +169,7 @@ plt.savefig(fluxfile, format= 'png')
 
 # Plot Effective Temperature
 
-Tfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_Teff_'+prefix+'_.png'  
+Tfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_Teff_'+prefix+'.png'  
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -171,7 +181,7 @@ plt.savefig(Tfile, format= 'png')
 
 # Plot Ngamma
 
-gammafile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_ngamma_'+prefix+'_.png'   
+gammafile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_ngamma_'+prefix+'.png'   
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -183,7 +193,7 @@ plt.savefig(gammafile, format= 'png')
 
 # Plot Ngamma
 
-darkfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_darkness_'+prefix+'_.png'   
+darkfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_darkness_'+prefix+'.png'   
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -196,7 +206,7 @@ plt.savefig(darkfile, format= 'png')
 
 # Plot altitude
 
-altfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_altitude_'+prefix+'_.png'  
+altfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_altitude_'+prefix+'.png'  
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -208,7 +218,7 @@ plt.savefig(altfile, format= 'png')
 
 # Plot azimuth
 
-azfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_azimuth_'+prefix+'_.png'  
+azfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_azimuth_'+prefix+'.png'  
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)
@@ -220,7 +230,7 @@ plt.savefig(azfile, format= 'png')
 
 # Hour Angle
 
-hourfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_hourangle_'+prefix+'_.png'  
+hourfile = 'latlong_'+str(mylat)+'_'+str(mylong)+'_hourangle_'+prefix+'.png'  
 
 fig1 = plt.figure()
 ax = fig1.add_subplot(111)

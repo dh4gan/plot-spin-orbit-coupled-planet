@@ -21,17 +21,17 @@ azcol = 7
 
 # Read in input parameters
 
-#prefix = raw_input("What is the file prefix? ")
-#nfiles = input("How many files? ")
-#moviechoice = raw_input("Make an animated gif at end? (y/n) ")
-#deletechoice = 'n'
-#if(moviechoice=='y'):
-#    deletechoice = raw_input("Delete .png files? (y/n) ")
-
-prefix = 'trial'
-nfiles = 100
-moviechoice = 'y'
+prefix = raw_input("What is the file prefix? ")
+nfiles = input("How many files? ")
+moviechoice = raw_input("Make an animated gif at end? (y/n) ")
 deletechoice = 'n'
+if(moviechoice=='y'):
+    deletechoice = raw_input("Delete .png files? (y/n) ")
+
+#prefix = 'trial'
+#nfiles = 100
+#moviechoice = 'y'
+#deletechoice = 'n'
 
 nzeros = int(np.log10(nfiles))
 
@@ -101,7 +101,7 @@ for i in range(nfiles):
     ax = fig1.add_subplot(111)
     ax.set_xlabel('Longitude (degrees)')
     ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,flux, cmap='spectral',vmin = 0.0, vmax = 0.1)
+    plt.pcolor(longitude,latitude,flux, cmap='spectral',vmin = 0.0, vmax = 2000.0)
     plt.colorbar()
 
     plt.savefig(fluxfile, format= 'png')
@@ -174,7 +174,7 @@ fig1 = plt.figure(4)
 ax = fig1.add_subplot(111)
 ax.set_xlabel('Longitude (degrees)')
 ax.set_ylabel('Latitude (degrees)')
-plt.pcolor(longitude,latitude,integrated, cmap='spectral',vmin = 0.0, vmax = 0.08)
+plt.pcolor(longitude,latitude,integrated, cmap='spectral')
 plt.colorbar()
 
 plt.savefig(outputfile, format= 'png')
@@ -189,12 +189,12 @@ if(moviechoice=='y'):
     print 'Creating animated gif of flux pattern, filename fluxmovie.gif'
     system(convertcommand +'flux_'+prefix+'*.png fluxmovie.gif')
     print 'Creating animated gif of Teff pattern, filename Teffmovie.gif'
-    system(convertcommand +'Teff_'+prefix+'*.png fluxmovie.gif')
+    system(convertcommand +'Teff_'+prefix+'*.png Teffmovie.gif')
     print 'Creating animated gif of Ngamma pattern, filename ngammamovie.gif'
-    system(convertcommand +'ngamma_'+prefix+'*.png fluxmovie.gif')
+    system(convertcommand +'ngamma_'+prefix+'*.png ngammamovie.gif')
     print 'Creating animated gif of darkness pattern, filename darkmovie.gif'
-    system(convertcommand +'darkness_'+prefix+'*.png fluxmovie.gif')
-    print 'Creating animated gif of altitude pattern, filename altmovie.gif'
+    system(convertcommand +'darkness_'+prefix+'*.png darkmovie.gif')
+    print 'Creating animated gif of altitude pattern, altname altmovie.gif'
     system(convertcommand +'altitude_'+prefix+'*.png altmovie.gif')
     print 'Creating animated gif of azimuth pattern, filename azmovie.gif'
     system(convertcommand +'azimuth_'+prefix+'*.png azmovie.gif')
