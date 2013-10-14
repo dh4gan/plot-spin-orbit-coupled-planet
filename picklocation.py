@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from string import split
 from os import system
+import infofile
 #from sys import exit
 
 pi = 3.1415926585
@@ -25,8 +26,12 @@ distcol = 3
 
 # Read in input parameters
 
+# Read in input parameters
+
 prefix = raw_input("What is the file prefix? ")
-nfiles = input("How many files? ")
+
+nfiles, starradius, startemp, starcolor,fluxmax = infofile.read_infofile(prefix)
+
 moviechoice = raw_input("Make an animated gif at end? (y/n) ")
 deletechoice = 'n'
 if(moviechoice=='y'):
@@ -136,7 +141,7 @@ for i in range(nfiles):
     horizontal[i] = np.cos(altitude[i])*np.sin(azimuth[i])
     height[i] = np.sin(altitude[i])
 
-    starsize[i] = 20.0/(distance[i]*distance[i])
+    starsize[i] = 20.0*starradius/(distance[i]*distance[i])
  
     #print i, hourangle[i], azimuth[i], altitude[i], horizontal[i], height[i]
     # Plot sky position for this timestep
@@ -147,8 +152,8 @@ for i in range(nfiles):
     ax.set_ylabel('Height')
     ax.set_ylim(0,1)
     ax.set_xlim(-1,1)    
-    plt.scatter(horizontal[i],height[i], marker='o', s = starsize[i], color='red')
-    if(i>0): plt.plot(horizontal[:i-1],height[:i-1], linestyle='--', color='blue')    
+    plt.scatter(horizontal[i],height[i], marker='o', s = starsize[i], c=starcolor)
+        
     plt.savefig(skyfile, format= 'png')
     plt.clf()
 

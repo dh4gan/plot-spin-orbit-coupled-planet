@@ -6,6 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from string import split
 from os import system
+import infofile
+
 #from sys import exit
 
 pi = 3.1415926585
@@ -22,16 +24,13 @@ azcol = 7
 # Read in input parameters
 
 prefix = raw_input("What is the file prefix? ")
-nfiles = input("How many files? ")
+
+nfiles, starradius, startemp, starcolor,fluxmax = infofile.read_infofile(prefix)
+
 moviechoice = raw_input("Make an animated gif at end? (y/n) ")
 deletechoice = 'n'
 if(moviechoice=='y'):
     deletechoice = raw_input("Delete .png files? (y/n) ")
-
-#prefix = 'trial'
-#nfiles = 100
-#moviechoice = 'y'
-#deletechoice = 'n'
 
 nzeros = int(np.log10(nfiles))
 
@@ -94,79 +93,82 @@ for i in range(nfiles):
     
     # Plot 2D maps of this timestep
     
+    if(moviechoice=='y'):
+        # Flux
     
-    # Flux
+        fig1 = plt.figure(1)
+        ax = fig1.add_subplot(111)
+        ax.set_xlabel('Longitude (degrees)')
+        ax.set_ylabel('Latitude (degrees)')
+        plt.pcolor(longitude,latitude,flux, cmap='spectral',vmin = 0.0, vmax = 2000.0)
+        plt.colorbar()
+
+        plt.savefig(fluxfile, format= 'png')
+        plt.clf()
     
-    fig1 = plt.figure(1)
-    ax = fig1.add_subplot(111)
-    ax.set_xlabel('Longitude (degrees)')
-    ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,flux, cmap='spectral',vmin = 0.0, vmax = 2000.0)
-    plt.colorbar()
+        # Effective Temperature
+        fig1 = plt.figure(2)
+        ax = fig1.add_subplot(111)
+        ax.set_xlabel('Longitude (degrees)')
+        ax.set_ylabel('Latitude (degrees)')
+        plt.pcolor(longitude,latitude,Teff, cmap='spectral',vmin = 0.0, vmax = 500.0)
+        plt.colorbar()
 
-    plt.savefig(fluxfile, format= 'png')
-    plt.clf()
-    
-    # Effective Temperature
-    fig1 = plt.figure(2)
-    ax = fig1.add_subplot(111)
-    ax.set_xlabel('Longitude (degrees)')
-    ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,Teff, cmap='spectral',vmin = 0.0, vmax = 500.0)
-    plt.colorbar()
+        plt.savefig(Tfile, format= 'png')
+        plt.clf()
 
-    plt.savefig(Tfile, format= 'png')
-    plt.clf()
+        # N Gamma
+        fig1 = plt.figure(3)
+        ax = fig1.add_subplot(111)
+        ax.set_xlabel('Longitude (degrees)')
+        ax.set_ylabel('Latitude (degrees)')
+        plt.pcolor(longitude,latitude,np.log10(ngamma), cmap='spectral',vmin = 0.0, vmax = 4.0)
+        plt.colorbar()
 
-    # N Gamma
-    fig1 = plt.figure(3)
-    ax = fig1.add_subplot(111)
-    ax.set_xlabel('Longitude (degrees)')
-    ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,np.log10(ngamma), cmap='spectral',vmin = 0.0, vmax = 4.0)
-    plt.colorbar()
+        plt.savefig(gammafile, format= 'png')
+        plt.clf()
 
-    plt.savefig(gammafile, format= 'png')
-    plt.clf()
+        # Darkness
+        fig1 = plt.figure(4)
+        ax = fig1.add_subplot(111)
+        ax.set_xlabel('Longitude (degrees)')
+        ax.set_ylabel('Latitude (degrees)')
+        plt.pcolor(longitude,latitude,darkness, cmap='spectral',vmin = 0.0, vmax = 1.0)
+        plt.colorbar()
 
-    # Darkness
-    fig1 = plt.figure(4)
-    ax = fig1.add_subplot(111)
-    ax.set_xlabel('Longitude (degrees)')
-    ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,darkness, cmap='spectral',vmin = 0.0, vmax = 1.0)
-    plt.colorbar()
-
-    plt.savefig(darkfile, format= 'png')
-    plt.clf()
+        plt.savefig(darkfile, format= 'png')
+        plt.clf()
 
         
     
-    fig1 = plt.figure(5)
-    ax = fig1.add_subplot(111)
-    ax.set_xlabel('Longitude (degrees)')
-    ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,altitude, cmap='spectral',vmin = 0.0, vmax = 90.0)
-    plt.colorbar()
+        fig1 = plt.figure(5)
+        ax = fig1.add_subplot(111)
+        ax.set_xlabel('Longitude (degrees)')
+        ax.set_ylabel('Latitude (degrees)')
+        plt.pcolor(longitude,latitude,altitude, cmap='spectral',vmin = 0.0, vmax = 90.0)
+        plt.colorbar()
 
-    plt.savefig(altfile, format= 'png')
-    plt.clf()
+        plt.savefig(altfile, format= 'png')
+        plt.clf()
     
-    fig1 = plt.figure(6)
-    ax = fig1.add_subplot(111)
-    ax.set_xlabel('Longitude (degrees)')
-    ax.set_ylabel('Latitude (degrees)')
-    plt.pcolor(longitude,latitude,azimuth, cmap='spectral',vmin = 0.0, vmax = 360.0)
-    plt.colorbar()
+        fig1 = plt.figure(6)
+        ax = fig1.add_subplot(111)
+        ax.set_xlabel('Longitude (degrees)')
+        ax.set_ylabel('Latitude (degrees)')
+        plt.pcolor(longitude,latitude,azimuth, cmap='spectral',vmin = 0.0, vmax = 360.0)
+        plt.colorbar()
 
-    plt.savefig(azfile, format= 'png')
-    plt.clf()
-    #exit()
+        plt.savefig(azfile, format= 'png')
+        plt.clf()
+
     # Save to file
 
 # end of loop
 
 # Plot 2D map of integrated flux
+
+integratedmax = np.amax(integrated)
+integratedmin = np.amin(integrated)
     
 outputfile = 'integrated'+prefix+'.png'
 
@@ -174,7 +176,22 @@ fig1 = plt.figure(4)
 ax = fig1.add_subplot(111)
 ax.set_xlabel('Longitude (degrees)')
 ax.set_ylabel('Latitude (degrees)')
-plt.pcolor(longitude,latitude,integrated, cmap='spectral')
+plt.pcolor(longitude,latitude,integrated, cmap='spectral',vmin = integratedmin, vmax= integratedmax)
+plt.colorbar()
+
+plt.savefig(outputfile, format= 'png')
+
+# Final darkness map
+
+outputfile = 'totaldarkness'+prefix+'.png'
+
+integratedmax = np.amax(darkness)
+integratedmin = np.amin(darkness)
+fig1 = plt.figure(5)
+ax = fig1.add_subplot(111)
+ax.set_xlabel('Longitude (degrees)')
+ax.set_ylabel('Latitude (degrees)')
+plt.pcolor(longitude,latitude,darkness, cmap='spectral',vmin = integratedmin, vmax = integratedmax)
 plt.colorbar()
 
 plt.savefig(outputfile, format= 'png')
