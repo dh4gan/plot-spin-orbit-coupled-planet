@@ -49,10 +49,12 @@ darkness = data[:,darkcol].reshape(nlat,nlong)
 outputfile = 'integrateddarkness'+prefix+'.png'
 
 integratedmax = np.amax(darkness)
-integratedmax = np.amax(darkness)
 integratedmin = np.amin(darkness)
 
+print "Calculated darkness limits: ", integratedmin, integratedmax
 
+#integratedmin = 0.2509
+#integratedmax = 0.2541
 print "Plotting darkness, limits: ",integratedmin, integratedmax
 
 fig1 = plt.figure(1)
@@ -61,8 +63,8 @@ ax.set_xlabel('Longitude (degrees)')
 ax.set_ylabel('Latitude (degrees)')
 plt.contour(longitude,latitude,darkness)
 plt.pcolor(longitude,latitude,darkness, cmap='spectral',vmin = integratedmin, vmax = integratedmax)
-plt.colorbar()
-
+colourbar = plt.colorbar()
+colourbar.set_label('Total Time in Darkness (years)')
 plt.savefig(outputfile, format= 'png')
 
 # Now plot integrated flux
@@ -74,13 +76,16 @@ integratedmin = np.amin(flux)
 
 print "Plotting flux, limits: ",integratedmin, integratedmax
 
+flux = flux/integratedmax
+
 fig1 = plt.figure(2)
 ax = fig1.add_subplot(111)
 ax.set_xlabel('Longitude (degrees)')
 ax.set_ylabel('Latitude (degrees)')
 plt.contour(longitude,latitude,flux)
-plt.pcolor(longitude,latitude,flux, cmap='spectral',vmin = integratedmin, vmax = integratedmax)
-plt.colorbar()
+plt.pcolor(longitude,latitude,flux, cmap='spectral')
+colourbar = plt.colorbar()
+colourbar.set_label('Time Averaged Flux')
 
 plt.savefig(outputfile, format= 'png')
 
